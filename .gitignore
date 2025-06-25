@@ -1,0 +1,8 @@
+.vscode/
+server/logs/*
+
+# Ignore all the object files
+*.o
+# Ignore all the executable files
+client/client
+server/server
