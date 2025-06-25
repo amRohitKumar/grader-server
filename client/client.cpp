@@ -5,8 +5,8 @@
 #include <iostream>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include "modules/tcpClient.h"
-#include "modules/fileTransfer.h"
+#include "modules/tcpClient/tcpClient.h"
+#include "modules/fileTransfer/fileTransfer.h"
 
 
 std::pair<std::string, int> parseServerAddress(const std::string& serverAddress){

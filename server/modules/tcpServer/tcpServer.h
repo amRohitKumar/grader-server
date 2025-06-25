@@ -2,9 +2,9 @@
 
 #include <netinet/in.h>
 #include <pthread.h>
-#include "threadPool.h"
-#include "grader.h"
-#include "connection.h"
+#include "../threadPool/threadPool.h"
+#include "../grader/grader.h"
+#include "../connection/connection.h"
 // #include "queue.h"
 
 #define MAX_CLIENTS 5

@@ -6,9 +6,9 @@
 #include <iostream>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include "modules/grader.h"
-#include "modules/tcpServer.h"
-#include "modules/threadPool.h"
+#include "modules/grader/grader.h"
+#include "modules/tcpServer/tcpServer.h"
+#include "modules/threadPool/threadPool.h"
 
 class Application{
     Grader grader;

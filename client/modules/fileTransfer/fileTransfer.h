@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "tcpClient.h"
+#include "../tcpClient/tcpClient.h"
 
 #define BUFFER_SIZE 1024
 #define MAX_FILE_SIZE_BYTES 4
