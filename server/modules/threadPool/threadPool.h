@@ -17,19 +17,19 @@ class ThreadPool{
     std::atomic<bool> stop;
     std::vector<std::thread> workers;
 public:
-    ThreadPool(int);
+    explicit ThreadPool(int);
 
     template<class F>
-    void enqueue(F&&);
+    void enqueue(F&& f);
+
+    ~ThreadPool();
 };
 
 template<class F>
 void ThreadPool::enqueue(F&& f) {
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
-        printf("Queue size before: %d\n", tasks.size());
         tasks.emplace(std::forward<F>(f));
-        printf("Queue size after: %d\n", tasks.size());
     }
     condition.notify_one();
 }
