@@ -19,17 +19,18 @@ class ThreadPool{
 public:
     explicit ThreadPool(int);
 
-    template<class F>
-    void enqueue(F&& f);
+    template<class F, class... Args>
+    void enqueue(F&& f, Args&&... args);
 
     ~ThreadPool();
 };
 
-template<class F>
-void ThreadPool::enqueue(F&& f) {
+template<class F, class... Args>
+void ThreadPool::enqueue(F&& f, Args&&... args) {
+    std::function<void()> task = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
-        tasks.emplace(std::forward<F>(f));
+        tasks.emplace(std::move(task));
     }
     condition.notify_one();
 }
