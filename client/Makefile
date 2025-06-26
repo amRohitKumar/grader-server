@@ -1,20 +1,20 @@
 CC = g++
 CFLAGS = -std=c++17 -Wall -Wextra
-OBJ = client.o tcpClient.o fileTransfer.o 
+OBJ = client.o tcpClient.o itcp.o 
 
+itcp_DIR = ../modules/tcp
 tcpClient_DIR = modules/tcpClient
-fileTransfer_DIR = modules/fileTransfer
 
 client: $(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@
 
-client.o: client.cpp $(tcpClient_DIR)/tcpClient.h $(fileTransfer_DIR)/fileTransfer.h
+client.o: client.cpp $(tcpClient_DIR)/tcpClient.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-tcpClient.o: $(tcpClient_DIR)/tcpClient.cpp $(tcpClient_DIR)/tcpClient.h
+tcpClient.o: $(tcpClient_DIR)/tcpClient.cpp $(tcpClient_DIR)/tcpClient.h $(itcp_DIR)/tcp.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-fileTransfer.o: $(fileTransfer_DIR)/fileTransfer.cpp $(fileTransfer_DIR)/fileTransfer.h $(tcpClient_DIR)/tcpClient.h
+itcp.o: $(itcp_DIR)/tcp.cpp $(itcp_DIR)/tcp.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean: 

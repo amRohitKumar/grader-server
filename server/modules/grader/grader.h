@@ -1,13 +1,13 @@
 #pragma once
 
 #include <string>
-#include "../connection/connection.h"
+#include "../../../modules/tcp/tcp.h"
 
 class Grader{
     int fileId;
-    Connection server;
+    ITCP& server;
 public:
-    Grader();
+    Grader(ITCP&);
     std::string compileCommand(std::string&, std::string&);
     char *make_program_filename();
     char *make_exec_filename();

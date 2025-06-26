@@ -1,15 +1,10 @@
 #pragma once
 
 #include <string>
+#include "../../../modules/tcp/tcp.h"
 
-class TCPClient{
-    int serverPort;
-    int clientSocket;
+class TCPClient: public ITCP{
     const std::string serverIp;
 public:
     TCPClient(int, const std::string&);
-    int getSocketFD();
-    int sendData(const char*, size_t);
-    int recvData(const char*, size_t);
-    ~TCPClient();
 };

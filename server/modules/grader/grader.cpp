@@ -4,7 +4,7 @@
 #include <string>
 #include "grader.h"
 
-Grader::Grader(): server(){
+Grader::Grader(ITCP& _server): server(_server){
     fileId = pthread_self(); // any random unique text
 }
 
@@ -168,54 +168,8 @@ char *Grader::compile_command(char *programFile, char *execFile)
     strcat(s, " 2> logs/outputs/compiler_err");
     sprintf(s1, "%d", fileId);
     strcat(s, s1);
-    // printf("%s\n", s);
     return s;
 }
-
-
-
-// char *Grader::run_command(char *execFile)
-// {
-//     char *s;
-//     char s1[20];
-
-//     s = (char *)malloc(200 * sizeof(char));
-//     memset(s, 0, sizeof(s));
-//     memset(s1, 0, sizeof(s1));
-//     sprintf(s1, "%d", fileId);
-
-//     strcpy(s, "./");
-//     strcat(s, execFile);
-//     strcat(s, " > logs/outputs/out");
-//     strcat(s, s1);
-//     strcat(s, " 2> logs/outputs/runtime_err");
-//     strcat(s, s1);
-//     // printf("%s\n", s);
-//     return s;
-// }
-
-
-
-// char *Grader::output_check_command(char *outputFile)
-// {
-//     char *s;
-//     char s1[20];
-
-//     s = (char *)malloc(200 * sizeof(char));
-//     memset(s, 0, sizeof(s));
-//     memset(s1, 0, sizeof(s1));
-//     sprintf(s1, "%d", fileId);
-
-//     strcpy(s, "diff -Z ");
-//     strcat(s, outputFile);
-//     strcat(s, " expected_output.txt");
-//     strcat(s, " > logs/outputs/output_diff");
-//     strcat(s, s1);
-//     // printf("\n%s\n",s);
-//     return s;
-// }
-
-
 
 int Grader::delete_file(char *file_path){
     char command[256];
@@ -235,7 +189,8 @@ int Grader::execute(int clientSockFD){
         server.recvFile(clientSockFD, programFileName);  // recieving the file from the client
     } catch (std::exception e) {
         free(programFileName);
-        throw std::runtime_error("ERROR :: FILE RECV ERROR");
+        std::cerr << e.what() << '\n';
+        throw std::runtime_error("ERROR :: FILE RECV ERROR 3");
     }
     int n = server.sendData(clientSockFD, "I got your code file for grading\n", 33); //send the response back to the client
     if (n < 0)
@@ -262,7 +217,7 @@ int Grader::execute(int clientSockFD){
         // sleep(1);
         if (n >= 0)
         {
-            n = server.sendFile(clientSockFD, compileOutputFileName); // send the compiler error to the client
+            server.sendFile(clientSockFD, compileOutputFileName); // send the compiler error to the client
         }
     }
 
@@ -271,7 +226,7 @@ int Grader::execute(int clientSockFD){
     {
         n = server.sendData(clientSockFD, "RUNTIME ERROR", 14);  // send back the response to the client
         if (n >= 0)
-            n = server.sendFile(clientSockFD, runtimeOutputFileName); // send the runtime error to the client
+            server.sendFile(clientSockFD, runtimeOutputFileName); // send the runtime error to the client
     }
     else
     {
@@ -280,7 +235,7 @@ int Grader::execute(int clientSockFD){
         {
             n = server.sendData(clientSockFD, "OUTPUT ERROR", 14);   // send respond to the client MSG_NOSIGNAL flag fixes the broken pipe error
             if (n >= 0)
-                n = server.sendFile(clientSockFD, outputDiffFileName);    // send the difference to the client
+                server.sendFile(clientSockFD, outputDiffFileName);    // send the difference to the client
         }
         else
         {

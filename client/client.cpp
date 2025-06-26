@@ -6,7 +6,6 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include "modules/tcpClient/tcpClient.h"
-#include "modules/fileTransfer/fileTransfer.h"
 
 
 std::pair<std::string, int> parseServerAddress(const std::string& serverAddress){
@@ -34,11 +33,15 @@ int main(int argc, char *argv[]){
     timeout.tv_usec = 0;
     
     TCPClient client(serverPort, serverIp);
-    FileTransfer fTransfer(client);
 
-    if(fTransfer.sendFile(argv[2]) < 0){
-        std::cerr<<"Error sending source file\n";
-        throw std::runtime_error("Error sending source file");
+    try
+    {
+        client.sendFile(client.getSocketFD(), argv[2]);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 1;
     }
 
     std::cout<<"Code sent for grading, waiting for response\n";
@@ -49,6 +52,6 @@ int main(int argc, char *argv[]){
         throw std::runtime_error("setsockopt failed");
     }
     std::cout<<"----- Server Response -------- \n";
-    fTransfer.recvFileConsole();
+    client.recvFileConsole();
     return 0;
 }
